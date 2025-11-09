@@ -23,46 +23,49 @@
 
 ```
 structured/
-DEMO/ # Runnable Demo
-run_demo.bat # Windows: Double-click to run
-run_demo.sh # Linux/Mac: ./run_demo.sh
-streamlit_app.py # Interactive dashboard
-README.md # Demo instructions
-SOURCE/ # Source Code
-src/ # Core modules
-data/ # Data preprocessing
-models/ # ML models
-serving/ # Inference & explainability
-optimization/ # Threshold tuning
-monitoring/ # CloudWatch integration
-scripts/ # Training & utilities
-train_fast_lane.py # Train Fast Lane model
-train_deep_lane.py # Train Deep Lane model
-run_optimization.py # Optimize thresholds
-aws/ # AWS deployment
-template.yaml # SAM infrastructure
-lambda/handler.py # Lambda function
-scripts/ # Deployment scripts
-config/ # Configuration
-config.yaml # System config
-requirements.txt # Python dependencies
-DOCS/ # Documentation
-README.md # Documentation index
-QUICK_START.md # 5-minute quick start
-USER_GUIDE.md # Complete user guide
-API_REFERENCE.md # API documentation
-DEPLOYMENT_GUIDE.md # AWS deployment guide
-ARCHITECTURE.md # System architecture
-TROUBLESHOOTING.md # Common issues & fixes
-MODELS/ # Pre-trained Models
-README.md # Model documentation
-fast_lane/ # Fast Lane models
-lr_model.pkl # Logistic Regression
-scaler.pkl # Feature scaler
-deep_lane/ # Deep Lane outputs
-entity_risk.csv # 5,526 entity risks
-xgboost_model.pkl # XGBoost model
-autoencoder.h5 # Autoencoder model
+│
+├── DEMO/                      # Runnable Demo
+│   ├── run_demo.bat          # Windows launcher (double-click to run)
+│   ├── run_demo.sh           # Linux/Mac launcher (./run_demo.sh)
+│   ├── streamlit_app.py      # Interactive dashboard application
+│   └── README.md             # Demo instructions
+│
+├── SOURCE/                    # Complete Source Code
+│   ├── src/                  # Core application modules
+│   │   ├── data/            # Data preprocessing pipelines
+│   │   ├── models/          # Machine learning models
+│   │   ├── serving/         # Inference & explainability
+│   │   ├── optimization/    # Threshold tuning algorithms
+│   │   └── monitoring/      # CloudWatch integration
+│   ├── scripts/             # Training & utility scripts
+│   │   ├── train_fast_lane.py    # Train Fast Lane model
+│   │   ├── train_deep_lane.py    # Train Deep Lane model
+│   │   └── run_optimization.py   # Optimize decision thresholds
+│   ├── aws/                 # AWS deployment infrastructure
+│   │   ├── template.yaml         # SAM infrastructure definition
+│   │   ├── lambda/              # Lambda function code
+│   │   │   └── handler.py       # Main Lambda handler
+│   │   └── scripts/             # Deployment scripts
+│   ├── config/              # Configuration files
+│   │   └── config.yaml          # System configuration
+│   └── requirements.txt     # Python dependencies
+│
+├── DOCS/                      # Complete Documentation
+│   ├── README.md             # Documentation index
+│   ├── QUICK_START.md        # 5-minute quick start guide
+│   ├── API_REFERENCE.md      # API endpoints & integration
+│   ├── ARCHITECTURE.md       # System design & architecture
+│   ├── DEPLOYMENT_GUIDE.md   # AWS deployment guide
+│   ├── ROI_ANALYSIS.md       # Business value & ROI analysis
+│   └── TROUBLESHOOTING.md    # Common issues & fixes
+│
+└── MODELS/                    # Pre-trained Models & Data
+    ├── README.md             # Model documentation
+    ├── fast_lane/           # Fast Lane (Real-time)
+    │   ├── logistic_model.pkl    # Logistic Regression model
+    │   └── preprocessor.pkl      # Feature scaler
+    └── deep_lane/           # Deep Lane (Batch processing)
+        └── entity_risk_combined.csv  # 5,526 entity risks
 ```
 ## Quick Start (Choose Your Path)
 ### Option 1: Try the Demo (Fastest - 2 minutes)
@@ -121,25 +124,49 @@ curl https://your-api-url.amazonaws.com/prod/predict \
 ### Dual-Track Design
 
 ```
-Transaction Input 
-(V1-V28, Time, Amount, device, IP, email) 
-FAST LANE DEEP LANE 
-(Real-time) (Batch) 
-Dataset: Dataset: 
-Credit Card IEEE-CIS 
-Model: Models: 
-Logistic XGBoost + 
-Regression Autoencoder 
-Latency: Update: 
-20-50ms Every 15min 
-Output: Output: 
-model_score entity_risk 
-Combined Score 
-70% + 30% 
-RBA Policy 
-Pass/Chg/Block 
-SHAP Explainer 
-Reason Codes 
+┌─────────────────────────────────────────────────────────────────┐
+│           Transaction Input (V1-V28, Time, Amount,              │
+│                    device, IP, email)                           │
+└────────────────────────┬────────────────────────────────────────┘
+                         │
+         ┌───────────────┴────────────────┐
+         │                                │
+         ▼                                ▼
+┌────────────────────┐          ┌────────────────────┐
+│    FAST LANE       │          │    DEEP LANE       │
+│   (Real-time)      │          │     (Batch)        │
+├────────────────────┤          ├────────────────────┤
+│ Dataset:           │          │ Dataset:           │
+│  Credit Card       │          │  IEEE-CIS          │
+│                    │          │                    │
+│ Model:             │          │ Models:            │
+│  Logistic          │          │  XGBoost +         │
+│  Regression        │          │  Autoencoder       │
+│                    │          │                    │
+│ Latency:           │          │ Update:            │
+│  20-50ms           │          │  Every 15min       │
+│                    │          │                    │
+│ Output:            │          │ Output:            │
+│  model_score       │          │  entity_risk       │
+└─────────┬──────────┘          └─────────┬──────────┘
+          │                               │
+          └───────────┬───────────────────┘
+                      ▼
+          ┌───────────────────────┐
+          │   Combined Score      │
+          │   70% Fast + 30% Deep │
+          └───────────┬───────────┘
+                      ▼
+          ┌───────────────────────┐
+          │     RBA Policy        │
+          │  Pass / Challenge /   │
+          │       Block           │
+          └───────────┬───────────┘
+                      ▼
+          ┌───────────────────────┐
+          │   SHAP Explainer      │
+          │   Reason Codes        │
+          └───────────────────────┘
 ```
 ### Key Components
 

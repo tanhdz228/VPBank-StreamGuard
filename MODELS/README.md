@@ -6,11 +6,15 @@ This folder contains pre-trained machine learning models and entity risk data fo
 
 ```
 MODELS/
-fast_lane/ # Fast Lane (Real-time)
-logistic_model.pkl # Logistic Regression model (1 KB)
-preprocessor.pkl # Feature scaler (2 KB)
-deep_lane/ # Deep Lane (Batch)
-entity_risk_combined.csv # 5,526 entity risks (452 KB)
+│
+├── README.md                      # This file (model documentation)
+│
+├── fast_lane/                     # Fast Lane (Real-time Scoring)
+│   ├── logistic_model.pkl         # Logistic Regression model (1 KB)
+│   └── preprocessor.pkl           # StandardScaler for features (2 KB)
+│
+└── deep_lane/                     # Deep Lane (Batch Processing)
+    └── entity_risk_combined.csv   # 5,526 pre-computed entity risks (452 KB)
 ```
 ## Fast Lane Models
 ### logistic_model.pkl

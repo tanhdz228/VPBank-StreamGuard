@@ -28,10 +28,18 @@ This is a **complete, production-ready fraud detection system** with:
 
 ```
 structured/
-DEMO/ # Click run_demo.bat to try it!
-SOURCE/ # Complete source code
-DOCS/ # All documentation
-MODELS/ # Pre-trained models
+│
+├── DEMO/           # Click run_demo.bat to try it!
+│                   # Interactive fraud detection dashboard
+│
+├── SOURCE/         # Complete source code (3,500+ lines)
+│                   # Training scripts, AWS deployment, monitoring
+│
+├── DOCS/           # All documentation (7 comprehensive guides)
+│                   # Quick start, API reference, architecture, ROI
+│
+└── MODELS/         # Pre-trained models (455 KB, ready to use)
+                    # Fast Lane + Deep Lane models
 ```
 ### DEMO/ - Try it Now!
 

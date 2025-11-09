@@ -6,50 +6,77 @@
 ## Architecture Overview
 
 ```
-Client Application 
-(Web/Mobile/Backend Service) 
-HTTPS POST /predict
-API Gateway (REST) 
-• Rate limiting: 1000 req/sec 
-• Authentication: API Key 
-• CORS enabled 
-• Logging to CloudWatch 
-Invoke
-Lambda Function (Python 3.11) 
-1. Parse request (V1-V28, Time, Amount, entity IDs) 
-2. Load Fast Lane model from S3 (cached in /tmp) 
-3. Fetch entity_risk from DynamoDB (batch get) 
-4. Score transaction with Logistic Regression 
-5. Combine: 0.7 * model_score + 0.3 * entity_risk 
-6. Apply RBA rules (pass/challenge/block) 
-7. Return JSON response 
-Memory: 512 MB 
-Timeout: 10 seconds 
-Runtime: Python 3.11 
-GetObject GetItem
-(once, cached) (per request)
-S3 Bucket DynamoDB Table 
-• Fast Lane model Table: entity_risk 
-(lr_model.pkl) Partition Key: entity_key 
-• Preprocessor Attributes: 
-(scaler.pkl) - entity_type (str) 
-- entity_id (str) 
-Size: ~500 MB - risk_score (float) 
-Cost: $0.01/month - fraud_rate (float) 
-- transaction_count (int) 
-Items: 5,526 
-Size: ~500 KB 
-RCU: 5 (free tier: 25) 
-WCU: 1 (free tier: 25) 
-Cost: FREE (within tier) 
-PutObject
-(deployment)
-CloudWatch Logs & Metrics 
-• Lambda execution logs 
-• API Gateway access logs 
-• DynamoDB metrics 
-• Custom metrics: latency, fraud_rate, decision_distribution 
-Cost: FREE (within 5GB tier) 
+┌──────────────────────────────────────────────────────────────────────┐
+│                      Client Application                              │
+│              (Web / Mobile / Backend Service)                        │
+└──────────────────────────┬───────────────────────────────────────────┘
+                           │
+                           │ HTTPS POST /predict
+                           ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                     API Gateway (REST)                               │
+│  • Rate limiting: 1000 req/sec                                       │
+│  • Authentication: API Key                                           │
+│  • CORS enabled                                                      │
+│  • Logging to CloudWatch                                             │
+└──────────────────────────┬───────────────────────────────────────────┘
+                           │
+                           │ Invoke
+                           ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│               Lambda Function (Python 3.11)                          │
+│                                                                      │
+│  Processing Steps:                                                   │
+│  1. Parse request (V1-V28, Time, Amount, entity IDs)                │
+│  2. Load Fast Lane model from S3 (cached in /tmp)                   │
+│  3. Fetch entity_risk from DynamoDB (batch get)                     │
+│  4. Score transaction with Logistic Regression                      │
+│  5. Combine: 0.7 * model_score + 0.3 * entity_risk                  │
+│  6. Apply RBA rules (pass/challenge/block)                          │
+│  7. Return JSON response                                            │
+│                                                                      │
+│  Configuration:                                                      │
+│  • Memory: 512 MB                                                    │
+│  • Timeout: 10 seconds                                               │
+│  • Runtime: Python 3.11                                              │
+└─────────┬────────────────────────────────────┬───────────────────────┘
+          │                                    │
+          │ GetObject                          │ GetItem
+          │ (once, cached)                     │ (per request)
+          ▼                                    ▼
+┌─────────────────────────┐      ┌───────────────────────────────────┐
+│      S3 Bucket          │      │      DynamoDB Table               │
+│                         │      │                                   │
+│  Models:                │      │  Table: entity_risk               │
+│  • Fast Lane model      │      │  Partition Key: entity_key        │
+│    (logistic_model.pkl) │      │                                   │
+│  • Preprocessor         │      │  Attributes:                      │
+│    (preprocessor.pkl)   │      │  • entity_type (str)              │
+│                         │      │  • entity_id (str)                │
+│  Size: ~500 MB          │      │  • risk_score (float)             │
+│  Cost: $0.01/month      │      │  • fraud_rate (float)             │
+│                         │      │  • transaction_count (int)        │
+│                         │      │                                   │
+│                         │      │  Capacity:                        │
+│                         │      │  • Items: 5,526                   │
+│                         │      │  • Size: ~500 KB                  │
+│                         │      │  • RCU: 5 (free tier: 25)         │
+│                         │      │  • WCU: 1 (free tier: 25)         │
+│                         │      │  • Cost: FREE (within tier)       │
+└─────────┬───────────────┘      └───────────────────────────────────┘
+          │
+          │ PutObject (deployment)
+          ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                  CloudWatch Logs & Metrics                           │
+│                                                                      │
+│  • Lambda execution logs                                             │
+│  • API Gateway access logs                                           │
+│  • DynamoDB metrics                                                  │
+│  • Custom metrics: latency, fraud_rate, decision_distribution        │
+│                                                                      │
+│  Cost: FREE (within 5GB tier)                                        │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 ---
 ## Cost Breakdown

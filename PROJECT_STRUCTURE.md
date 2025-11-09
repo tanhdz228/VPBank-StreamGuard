@@ -3,63 +3,78 @@
 
 ```
 structured/
-README.md # Main project documentation
-PROJECT_STRUCTURE.md # This file (project structure overview)
-DEMO/ # Runnable Demo Application
-README.md # Demo instructions
-run_demo.bat # Windows launcher (double-click)
-run_demo.sh # Linux/Mac launcher
-streamlit_app.py # Interactive dashboard (600+ lines)
-SOURCE/ # Complete Source Code
-requirements.txt # Python dependencies
-src/ # Core application modules
-data/ # Data processing
-creditcard_preprocessor.py # Credit Card preprocessing
-ieee_preprocessor.py # IEEE-CIS preprocessing
-data_loader.py # Data loading utilities
-models/ # ML models
-deep_lane_model.py # XGBoost + Autoencoder
-serving/ # Inference & production
-explainer.py # SHAP explainability (285 lines)
-rba_policy.py # Risk-based auth (342 lines)
-optimization/ # Model optimization
-threshold_tuner.py # Threshold optimization (600 lines)
-monitoring/ # Production monitoring
-cloudwatch_metrics.py # CloudWatch integration (400 lines)
-model_performance.py # Performance monitoring (550 lines)
-utils/ # Utilities
-config.py # Configuration management
-scripts/ # Training & utility scripts
-train_fast_lane.py # Train Fast Lane model
-train_deep_lane.py # Train Deep Lane model
-run_optimization.py # Run threshold optimization (400 lines)
-test_pl.py # Testing utilities
-aws/ # AWS Deployment
-template.yaml # SAM infrastructure (CloudFormation)
-lambda/ # Lambda function
-handler.py # Main Lambda handler (200 lines)
-requirements.txt # Lambda dependencies
-scripts/ # Deployment scripts
-upload_models_to_s3.py # Upload models to S3
-load_entity_risk_to_dynamodb.py # Load entity risk
-setup_monitoring.py # Setup CloudWatch (450 lines)
-config/ # Configuration
-config.yaml # System configuration
-DOCS/ # Complete Documentation
-README.md # Documentation index
-QUICK_START.md # 5-minute quick start
-API_REFERENCE.md # Complete API documentation
-ARCHITECTURE.md # System architecture & design
-DEPLOYMENT_GUIDE.md # AWS deployment guide
-ROI_ANALYSIS.md # Business value & ROI ($61.2M savings)
-TROUBLESHOOTING.md # Common issues & solutions
-MODELS/ # Pre-trained Models & Data
-README.md # Model documentation
-fast_lane/ # Fast Lane (Real-time)
-logistic_model.pkl # Logistic Regression (1 KB)
-preprocessor.pkl # Feature scaler (2 KB)
-deep_lane/ # Deep Lane (Batch)
-entity_risk_combined.csv # 5,526 entity risks (452 KB)
+│
+├── README.md                          # Main project documentation
+├── PROJECT_STRUCTURE.md               # This file (project overview)
+├── START_HERE.md                      # Quick start guide
+│
+├── DEMO/                              # Runnable Demo Application
+│   ├── README.md                      # Demo instructions
+│   ├── run_demo.bat                   # Windows launcher (double-click)
+│   ├── run_demo.sh                    # Linux/Mac launcher
+│   └── streamlit_app.py               # Interactive dashboard (600+ lines)
+│
+├── SOURCE/                            # Complete Source Code
+│   ├── requirements.txt               # Python dependencies
+│   │
+│   ├── src/                          # Core application modules
+│   │   ├── data/                     # Data processing
+│   │   │   ├── creditcard_preprocessor.py    # Credit Card preprocessing
+│   │   │   ├── ieee_preprocessor.py          # IEEE-CIS preprocessing
+│   │   │   └── data_loader.py                # Data loading utilities
+│   │   │
+│   │   ├── models/                   # ML models
+│   │   │   └── deep_lane_model.py            # XGBoost + Autoencoder
+│   │   │
+│   │   ├── serving/                  # Inference & production
+│   │   │   ├── explainer.py                  # SHAP explainability (285 lines)
+│   │   │   └── rba_policy.py                 # Risk-based auth (342 lines)
+│   │   │
+│   │   ├── optimization/             # Model optimization
+│   │   │   └── threshold_tuner.py            # Threshold optimization (600 lines)
+│   │   │
+│   │   ├── monitoring/               # Production monitoring
+│   │   │   ├── cloudwatch_metrics.py         # CloudWatch integration (400 lines)
+│   │   │   └── model_performance.py          # Performance monitoring (550 lines)
+│   │   │
+│   │   └── utils/                    # Utilities
+│   │       └── config.py                     # Configuration management
+│   │
+│   ├── scripts/                      # Training & utility scripts
+│   │   ├── train_fast_lane.py        # Train Fast Lane model
+│   │   ├── train_deep_lane.py        # Train Deep Lane model
+│   │   ├── run_optimization.py       # Threshold optimization (400 lines)
+│   │   └── test_pl.py                # Testing utilities
+│   │
+│   ├── aws/                          # AWS Deployment
+│   │   ├── template.yaml             # SAM infrastructure (CloudFormation)
+│   │   ├── lambda/                   # Lambda function
+│   │   │   ├── handler.py                    # Main Lambda handler (200 lines)
+│   │   │   └── requirements.txt              # Lambda dependencies
+│   │   └── scripts/                  # Deployment scripts
+│   │       ├── upload_models_to_s3.py        # Upload models to S3
+│   │       ├── load_entity_risk_to_dynamodb.py   # Load entity risk
+│   │       └── setup_monitoring.py           # Setup CloudWatch (450 lines)
+│   │
+│   └── config/                       # Configuration
+│       └── config.yaml               # System configuration
+│
+├── DOCS/                              # Complete Documentation
+│   ├── README.md                      # Documentation index
+│   ├── QUICK_START.md                 # 5-minute quick start
+│   ├── API_REFERENCE.md               # Complete API documentation
+│   ├── ARCHITECTURE.md                # System architecture & design
+│   ├── DEPLOYMENT_GUIDE.md            # AWS deployment guide
+│   ├── ROI_ANALYSIS.md                # Business value & ROI ($61.2M savings)
+│   └── TROUBLESHOOTING.md             # Common issues & solutions
+│
+└── MODELS/                            # Pre-trained Models & Data
+    ├── README.md                      # Model documentation
+    ├── fast_lane/                     # Fast Lane (Real-time)
+    │   ├── logistic_model.pkl         # Logistic Regression (1 KB)
+    │   └── preprocessor.pkl           # Feature scaler (2 KB)
+    └── deep_lane/                     # Deep Lane (Batch)
+        └── entity_risk_combined.csv   # 5,526 entity risks (452 KB)
 ```
 ## File Statistics
 

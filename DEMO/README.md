@@ -123,17 +123,69 @@ After exploring the demo:
 ## Demo Architecture
 
 ```
-streamlit_app.py
-Load models (Fast Lane: Logistic Regression)
-Load entity risk (5,526 pre-computed entities)
-Generate mock transaction
-Feature engineering (V1-V28 + derived features)
-Score with Fast Lane model
-Lookup entity risk (device, IP, email)
-Combine scores (70% model + 30% entity)
-Apply RBA policy (pass/challenge/block)
-Generate SHAP explanations
-Display results in web UI
+┌─────────────────────────────────────────────────────────────┐
+│                    streamlit_app.py                         │
+│                  (Interactive Dashboard)                    │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+        ┌─────────────────────────────────────┐
+        │  Load Models & Data                 │
+        │  • Fast Lane: Logistic Regression   │
+        │  • Entity Risk: 5,526 entities      │
+        └─────────────┬───────────────────────┘
+                      │
+                      ▼
+        ┌─────────────────────────────────────┐
+        │  Generate Mock Transaction          │
+        │  (V1-V28, Time, Amount, entities)   │
+        └─────────────┬───────────────────────┘
+                      │
+                      ▼
+        ┌─────────────────────────────────────┐
+        │  Feature Engineering                │
+        │  • V1-V28 (PCA components)          │
+        │  • Derived features                 │
+        └─────────────┬───────────────────────┘
+                      │
+        ┌─────────────┴─────────────┐
+        │                           │
+        ▼                           ▼
+┌───────────────────┐    ┌──────────────────────┐
+│ Fast Lane Scoring │    │ Entity Risk Lookup   │
+│ (Logistic Model)  │    │ (device, IP, email)  │
+└─────────┬─────────┘    └──────────┬───────────┘
+          │                         │
+          │ model_score             │ entity_risk
+          └──────────┬──────────────┘
+                     │
+                     ▼
+        ┌─────────────────────────────────────┐
+        │  Combine Scores                     │
+        │  70% model + 30% entity             │
+        └─────────────┬───────────────────────┘
+                      │
+                      ▼
+        ┌─────────────────────────────────────┐
+        │  Apply RBA Policy                   │
+        │  • <30%: Pass                       │
+        │  • 30-70%: Challenge                │
+        │  • >70%: Block                      │
+        └─────────────┬───────────────────────┘
+                      │
+                      ▼
+        ┌─────────────────────────────────────┐
+        │  Generate SHAP Explanations         │
+        │  (Top 5 risk factors)               │
+        └─────────────┬───────────────────────┘
+                      │
+                      ▼
+        ┌─────────────────────────────────────┐
+        │  Display Results in Web UI          │
+        │  • Risk Score                       │
+        │  • Decision (Pass/Challenge/Block)  │
+        │  • Reason Codes                     │
+        └─────────────────────────────────────┘
 ```
 ## Support
 
