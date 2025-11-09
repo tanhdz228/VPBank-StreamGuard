@@ -1,0 +1,14 @@
+# AWS Lambda Dependencies for VPBank StreamGuard
+
+# AWS SDK (included in Lambda runtime, but specified for local testing)
+boto3==1.34.0
+botocore==1.34.0
+
+# Scientific computing
+numpy==1.24.3
+
+# Machine learning
+scikit-learn==1.3.0
+
+# Note: pandas NOT included to reduce package size (<250MB Lambda limit)
+# Model loading uses only pickle + numpy + sklearn

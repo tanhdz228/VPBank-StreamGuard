@@ -1,0 +1,124 @@
+# VPBank StreamGuard Configuration
+
+project:
+  name: "vpbank-streamguard"
+  version: "0.1.0"
+
+data:
+  raw_path: "data/raw"
+  processed_path: "data/processed"
+  features_path: "data/features"
+  
+  # Dataset URLs (Kaggle)
+  creditcard:
+    name: "creditcard"
+    url: "mlg-ulb/creditcardfraud"
+    file: "creditcard.csv"
+    
+  ieee_cis:
+    name: "ieee-cis"
+    url: "c/ieee-fraud-detection"
+    files:
+      train_transaction: "train_transaction.csv"
+      train_identity: "train_identity.csv"
+      test_transaction: "test_transaction.csv"
+      test_identity: "test_identity.csv"
+
+preprocessing:
+  creditcard:
+    test_size: 0.2
+    val_size: 0.1
+    random_state: 42
+    stratify: true
+    
+  ieee_cis:
+    test_size: 0.2
+    val_size: 0.1
+    random_state: 42
+    # V-blocks to keep (reduced dimensions)
+    v_blocks_keep:
+      - [95, 137]   # V95-V137: 43 features
+      - [279, 321]  # V279-V321: 43 features
+    # Identity features priority
+    identity_priority:
+      - "id_30"  # OS
+      - "id_31"  # Browser
+      - "id_23"  # IP Proxy
+      - "id_33"  # Screen resolution
+    identity_optional:
+      - "id_12"
+      - "id_15"
+      - "id_28"
+
+models:
+  fast_lane:
+    type: "lightgbm"
+    params:
+      objective: "binary"
+      metric: "auc"
+      boosting_type: "gbdt"
+      num_leaves: 31
+      learning_rate: 0.05
+      feature_fraction: 0.8
+      bagging_fraction: 0.8
+      bagging_freq: 5
+      max_depth: -1
+      min_child_samples: 20
+      reg_alpha: 0.1
+      reg_lambda: 0.1
+      n_estimators: 100
+      random_state: 42
+    target_latency_ms: 50
+    
+  deep_lane:
+    type: "xgboost"
+    params:
+      objective: "binary:logistic"
+      eval_metric: "auc"
+      max_depth: 6
+      learning_rate: 0.05
+      n_estimators: 200
+      subsample: 0.8
+      colsample_bytree: 0.8
+      min_child_weight: 3
+      gamma: 0.1
+      reg_alpha: 0.1
+      reg_lambda: 1
+      random_state: 42
+    autoencoder:
+      encoding_dim: 64
+      hidden_layers: [128, 64]
+      epochs: 50
+      batch_size: 256
+
+feature_store:
+  online:
+    type: "redis"
+    host: "localhost"
+    port: 6379
+    db: 0
+    ttl_seconds: 1800  # 30 minutes
+  offline:
+    type: "local"  # or "s3"
+    path: "data/features"
+
+serving:
+  api:
+    host: "0.0.0.0"
+    port: 8000
+    workers: 4
+  latency_targets:
+    p50_ms: 40
+    p95_ms: 150
+    p99_ms: 200
+  throughput:
+    target_tps: 1000
+
+monitoring:
+  metrics_port: 9090
+  log_level: "INFO"
+  
+aws:
+  region: "ap-southeast-1"  # Singapore
+  s3_bucket: "vpbank-streamguard-data"
+  kinesis_stream: "fraud-events"
