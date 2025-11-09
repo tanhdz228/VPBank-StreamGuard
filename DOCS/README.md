@@ -1,7 +1,9 @@
 # VPBank StreamGuard - Documentation Index
 ## Documentation Overview
+
 This folder contains all documentation for the VPBank StreamGuard fraud detection system.
 ## Quick Links
+
 | Document | Purpose | Audience | Time to Read |
 |----------|---------|----------|--------------|
 | **[QUICK_START.md](QUICK_START.md)** | Get started in 5 minutes | Developers | 5 min |
@@ -12,6 +14,7 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 | **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | Common issues & fixes | All | As needed |
 ## Documentation Structure
 ### For Developers
+
 1. **Start Here**: [QUICK_START.md](QUICK_START.md)
 - 5-minute setup
 - Run demo
@@ -40,6 +43,7 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 - Performance optimization
 - FAQ
 ### For Business Stakeholders
+
 1. **Start Here**: [ROI_ANALYSIS.md](ROI_ANALYSIS.md)
 - Annual savings: $61.2M
 - ROI: 611,789%
@@ -52,6 +56,7 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 - Performance metrics
 - Scalability
 ### For DevOps
+
 1. **Deployment**: [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)
 - Infrastructure as Code (SAM)
 - Step-by-step deployment
@@ -64,8 +69,9 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 - Scaling
 ## Document Descriptions
 ### QUICK_START.md
-**Purpose**: Get started with the system in 5 minutes
-**Contents**:
+
+- **Purpose**: Get started with the system in 5 minutes
+- **Contents**:
 - Prerequisites
 - Demo setup (60 seconds)
 - First API call
@@ -73,8 +79,9 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 **When to use**: First-time users, quick demos
 ---
 ### API_REFERENCE.md
-**Purpose**: Complete API documentation for integration
-**Contents**:
+
+- **Purpose**: Complete API documentation for integration
+- **Contents**:
 - Base URL & authentication
 - POST /predict endpoint (fraud scoring)
 - GET /health endpoint
@@ -87,8 +94,9 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 **When to use**: Integrating with existing systems
 ---
 ### ARCHITECTURE.md
-**Purpose**: Understand system design and architecture
-**Contents**:
+
+- **Purpose**: Understand system design and architecture
+- **Contents**:
 - Dual-track architecture diagram
 - Fast Lane (Credit Card dataset, Logistic Regression)
 - Deep Lane (IEEE-CIS dataset, XGBoost + Autoencoder)
@@ -100,8 +108,9 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 **When to use**: System design, technical discussions, onboarding
 ---
 ### DEPLOYMENT_GUIDE.md
-**Purpose**: Deploy system to AWS
-**Contents**:
+
+- **Purpose**: Deploy system to AWS
+- **Contents**:
 - Prerequisites (AWS account, CLI, SAM)
 - Infrastructure as Code (template.yaml)
 - Step-by-step deployment (30 minutes)
@@ -114,8 +123,9 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 **When to use**: Production deployment, staging setup
 ---
 ### ROI_ANALYSIS.md
-**Purpose**: Quantify business value and ROI
-**Contents**:
+
+- **Purpose**: Quantify business value and ROI
+- **Contents**:
 - Annual savings: $61.2M (conservative) to $84.9M (optimistic)
 - ROI: 611,789%
 - Payback period: 1.5 days
@@ -127,8 +137,9 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 **When to use**: Business case, executive presentations, budget approval
 ---
 ### TROUBLESHOOTING.md
-**Purpose**: Solve common issues and optimize performance
-**Contents**:
+
+- **Purpose**: Solve common issues and optimize performance
+- **Contents**:
 - Quick diagnostics
 - Common issues (Demo, AWS, API, Models, Data)
 - Debug tools
@@ -138,14 +149,17 @@ This folder contains all documentation for the VPBank StreamGuard fraud detectio
 **When to use**: When encountering errors or performance issues
 ## Additional Resources
 ### In Parent Directory (`../`)
+
 - **README.md**: Main project overview
 - **DEMO/README.md**: Demo-specific instructions
 - **SOURCE/**: Source code with inline comments
 ### External Links
+
 - **AWS Documentation**: https://docs.aws.amazon.com/
 - **Streamlit Docs**: https://docs.streamlit.io/
 - **SHAP Documentation**: https://shap.readthedocs.io/
 ## Quick Command Reference
+
 ```bash
 # Try the demo
 cd ../DEMO
@@ -163,13 +177,16 @@ curl https://your-api-url.amazonaws.com/prod/health
 aws logs tail /aws/lambda/vpbank-fraud-scoring --follow
 ```
 ## Document Versions
+
 All documentation is for **VPBank StreamGuard v1.0** (2025-11-10)
 ## Contributing to Docs
+
 If you find errors or have suggestions:
 1. Note the document and section
 2. Describe the issue or suggestion
 3. Contact the maintainer
 ## Support
+
 For documentation-related questions:
 - Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md) first
 - Review relevant documentation section

@@ -1,6 +1,7 @@
 # VPBank StreamGuard - Troubleshooting Guide
 ## Quick Diagnostics
 ### Check System Health
+
 ```bash
 # 1. Check Python version
 python --version
@@ -13,12 +14,15 @@ curl https://your-api-url.amazonaws.com/prod/health
 ## Common Issues
 ### 1. Demo Won't Start
 #### Symptom
+
 ```
 'python' is not recognized as an internal or external command
 ```
 #### Cause
+
 Python not installed or not in PATH
 #### Solution
+
 **Windows:**
 1. Download Python from https://www.python.org/downloads/
 2. Run installer
@@ -33,12 +37,15 @@ brew install python3
 ```
 ---
 #### Symptom
+
 ```
 ERROR: Could not find a version that satisfies the requirement streamlit
 ```
 #### Cause
+
 Outdated pip or network issue
 #### Solution
+
 ```bash
 # Upgrade pip
 python -m pip install --upgrade pip
@@ -47,12 +54,15 @@ pip install streamlit --verbose
 ```
 ---
 #### Symptom
+
 ```
 ModuleNotFoundError: No module named 'streamlit'
 ```
 #### Cause
+
 Packages not installed or wrong Python environment
 #### Solution
+
 ```bash
 # Verify pip is installing to correct Python
 which python
@@ -65,12 +75,15 @@ pip install -r requirements.txt
 ```
 ### 2. Demo Runs But Shows Errors
 #### Symptom
+
 ```
 FileNotFoundError: Model file not found
 ```
 #### Cause
+
 Models not in expected location
 #### Solution
+
 ```bash
 # Check model files exist
 ls ../SOURCE/src/ # Should see model files
@@ -80,12 +93,15 @@ cd MODELS
 ```
 ---
 #### Symptom
+
 ```
 AttributeError: 'NoneType' object has no attribute 'predict'
 ```
 #### Cause
+
 Model failed to load
 #### Solution
+
 1. Check model file integrity:
 ```bash
 python -c "import pickle; model = pickle.load(open('model.pkl', 'rb')); print(model)"
@@ -97,12 +113,15 @@ python train_fast_lane.py
 ```
 ---
 #### Symptom
+
 ```
 streamlit: command not found
 ```
 #### Cause
+
 Streamlit not in PATH
 #### Solution
+
 ```bash
 # Find Streamlit location
 pip show streamlit
@@ -111,12 +130,15 @@ python -m streamlit run streamlit_app.py
 ```
 ### 3. AWS Deployment Issues
 #### Symptom
+
 ```
 Error: AWS credentials not found
 ```
 #### Cause
+
 AWS credentials not configured
 #### Solution
+
 ```bash
 # Configure AWS CLI
 aws configure
@@ -128,12 +150,15 @@ aws configure
 ```
 ---
 #### Symptom
+
 ```
 Error: sam: command not found
 ```
 #### Cause
+
 AWS SAM CLI not installed
 #### Solution
+
 ```bash
 # Install SAM CLI
 pip install aws-sam-cli
@@ -142,12 +167,15 @@ sam --version
 ```
 ---
 #### Symptom
+
 ```
 Error: Stack creation failed
 ```
 #### Cause
+
 Various (permissions, resource limits, naming conflicts)
 #### Solution
+
 1. Check CloudFormation console for detailed error
 2. Common fixes:
 ```bash
@@ -160,12 +188,15 @@ sam deploy --guided
 ```
 ---
 #### Symptom
+
 ```
 Lambda function cold start >10s
 ```
 #### Cause
+
 Large deployment package or model loading
 #### Solution
+
 1. Optimize model size:
 ```python
 # Use joblib compression
@@ -176,24 +207,30 @@ joblib.dump(model, 'model.pkl', compress=3)
 3. Increase Lambda memory (more CPU = faster cold start)
 ---
 #### Symptom
+
 ```
 DynamoDB: ProvisionedThroughputExceededException
 ```
 #### Cause
+
 Too many requests to DynamoDB
 #### Solution
+
 ```yaml
 # In template.yaml, change to PAY_PER_REQUEST
 BillingMode: PAY_PER_REQUEST
 ```
 ### 4. Model Training Issues
 #### Symptom
+
 ```
 MemoryError during XGBoost training
 ```
 #### Cause
+
 Insufficient RAM
 #### Solution
+
 1. Reduce dataset size:
 ```python
 # Sample data
@@ -209,12 +246,15 @@ params = {
 3. Use incremental learning
 ---
 #### Symptom
+
 ```
 ValueError: Input contains NaN
 ```
 #### Cause
+
 Missing values in data
 #### Solution
+
 ```python
 # Check for NaN
 print(df.isnull().sum())
@@ -227,12 +267,15 @@ X_clean = preprocessor.preprocess(X)
 ```
 ---
 #### Symptom
+
 ```
 Autoencoder training very slow
 ```
 #### Cause
+
 No GPU or large dataset
 #### Solution
+
 1. Use GPU if available:
 ```python
 import tensorflow as tf
@@ -251,12 +294,15 @@ Dense(32, activation='relu') # Instead of 64
 ```
 ### 5. API / Performance Issues
 #### Symptom
+
 ```
 Latency >500ms
 ```
 #### Cause
+
 Cold start or slow model
 #### Solution
+
 1. Keep Lambda warm:
 ```bash
 # Use CloudWatch Event to ping every 5 minutes
@@ -275,12 +321,15 @@ entity_risk_cache = {}
 ```
 ---
 #### Symptom
+
 ```
 API returns 502 Bad Gateway
 ```
 #### Cause
+
 Lambda timeout or error
 #### Solution
+
 1. Check CloudWatch logs:
 ```bash
 aws logs tail /aws/lambda/vpbank-fraud-scoring --follow
@@ -293,12 +342,15 @@ Timeout: 30 # Instead of 10
 3. Fix Lambda code errors
 ---
 #### Symptom
+
 ```
 High AWS costs
 ```
 #### Cause
+
 Excessive API calls or large Lambda memory
 #### Solution
+
 1. Check CloudWatch metrics:
 ```bash
 aws cloudwatch get-metric-statistics \
@@ -325,12 +377,15 @@ aws cloudwatch put-metric-alarm \
 ```
 ### 6. Data Issues
 #### Symptom
+
 ```
 AUC very low (<0.6)
 ```
 #### Cause
+
 Data leakage, bad features, or class imbalance
 #### Solution
+
 1. Check class distribution:
 ```python
 print(y.value_counts())
@@ -346,12 +401,15 @@ df.describe()
 ```
 ---
 #### Symptom
+
 ```
 PSI > 0.25 (data drift detected)
 ```
 #### Cause
+
 Model trained on old data or synthetic mismatch
 #### Solution
+
 1. Retrain model:
 ```bash
 cd SOURCE/scripts
@@ -365,10 +423,13 @@ python run_optimization.py
 3. Monitor production data distribution
 ### 7. Dashboard Issues
 #### Symptom
+
 Dashboard shows "Connection Error"
 #### Cause
+
 API URL incorrect or API down
 #### Solution
+
 1. Check API URL:
 ```python
 # In streamlit_app.py
@@ -384,10 +445,13 @@ curl https://your-api-url.amazonaws.com/prod/health
 ```
 ---
 #### Symptom
+
 "Details" button doesn't work
 #### Cause
+
 State management issue in Streamlit
 #### Solution
+
 Already fixed in current version. If issue persists:
 ```python
 # Add st.rerun() after button click
@@ -397,6 +461,7 @@ st.rerun()
 ```
 ## Debug Tools
 ### 1. Test API Locally
+
 ```python
 # test_api.py
 import requests
@@ -411,6 +476,7 @@ response = requests.post(API_URL, json=transaction)
 print(json.dumps(response.json(), indent=2))
 ```
 ### 2. Test Model Locally
+
 ```python
 # test_model.py
 import pickle
@@ -424,6 +490,7 @@ score = model.predict_proba(X_test)[0, 1]
 print(f"Risk score: {score:.4f}")
 ```
 ### 3. Check Entity Risk
+
 ```python
 # test_entity_risk.py
 import boto3
@@ -434,6 +501,7 @@ response = table.get_item(Key={'entity_key': 'id_23#1'})
 print(response.get('Item', 'Not found'))
 ```
 ### 4. Monitor Lambda
+
 ```bash
 # Tail Lambda logs
 aws logs tail /aws/lambda/vpbank-fraud-scoring --follow
@@ -449,6 +517,7 @@ aws cloudwatch get-metric-statistics \
 ```
 ## Still Having Issues?
 ### Collect Diagnostic Info
+
 ```bash
 # System info
 python --version
@@ -463,6 +532,7 @@ ls -lh models/
 tail -n 50 demo/logs/streamlit.log
 ```
 ### Contact Support
+
 When reporting issues, include:
 1. Operating system & Python version
 2. Full error message and stack trace
@@ -470,6 +540,7 @@ When reporting issues, include:
 4. Relevant log files
 5. Command output from "Collect Diagnostic Info" above
 ## Useful Commands
+
 ```bash
 # Reset demo
 rm -rf .streamlit/
@@ -487,6 +558,7 @@ aws sts get-caller-identity
 aws cloudformation delete-stack --stack-name vpbank-fraud-detection
 ```
 ## Performance Benchmarks
+
 Expected performance on modern laptop:
 | Task | Time | Notes |
 |------|------|-------|

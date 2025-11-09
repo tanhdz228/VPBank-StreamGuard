@@ -1,22 +1,26 @@
 # VPBank StreamGuard - Dual-Track Real-Time Fraud Detection System
 ## Overview
+
 **VPBank StreamGuard** is an enterprise-grade fraud detection system that combines **real-time transaction scoring** with **behavioral intelligence** using a dual-track machine learning architecture.
 ### Key Features
-**Real-time Fraud Detection**: Score transactions in <150ms
-**Dual-Track Architecture**: Fast Lane (real-time) + Deep Lane (behavioral)
-**Explainable AI**: SHAP-based reason codes for every decision
-**Risk-Based Authentication**: Automatic Pass/Challenge/Block decisions
-**AWS Serverless**: Scalable, cost-effective deployment ($0.11/month prototype)
-**Production-Ready**: Fully tested, documented, and deployed
+
+- **Real-time Fraud Detection**: Score transactions in <150ms
+- **Dual-Track Architecture**: Fast Lane (real-time) + Deep Lane (behavioral)
+- **Explainable AI**: SHAP-based reason codes for every decision
+- **Risk-Based Authentication**: Automatic Pass/Challenge/Block decisions
+- **AWS Serverless**: Scalable, cost-effective deployment ($0.11/month prototype)
+- **Production-Ready**: Fully tested, documented, and deployed
 ### Performance Metrics
+
 | Metric | Target | Achieved | Status |
 |--------|--------|----------|--------|
-| Fast Lane AUC | 0.95-0.97 | **0.9650** | |
-| Deep Lane AUC | ≥0.88 | **0.8940** | |
-| API Latency (P95) | <150ms | **50-150ms** | |
-| Fraud Catch Rate | +10-15% | +12-18% (est.) | |
-| False Positive Reduction | -15-20% | -18-22% (est.) | |
+| Fast Lane AUC | 0.95-0.97 | **0.9650** | PASS |
+| Deep Lane AUC | ≥0.88 | **0.8940** | PASS |
+| API Latency (P95) | <150ms | **50-150ms** | PASS |
+| Fraud Catch Rate | +10-15% | +12-18% (est.) | PASS |
+| False Positive Reduction | -15-20% | -18-22% (est.) | PASS |
 ## Package Structure
+
 ```
 structured/
 DEMO/ # Runnable Demo
@@ -62,13 +66,16 @@ autoencoder.h5 # Autoencoder model
 ```
 ## Quick Start (Choose Your Path)
 ### Option 1: Try the Demo (Fastest - 2 minutes)
+
 **No setup required!** Just run the interactive demo:
 #### Windows:
+
 ```cmd
 cd DEMO
 run_demo.bat
 ```
 #### Linux/Mac:
+
 ```bash
 cd DEMO
 ./run_demo.sh
@@ -78,6 +85,7 @@ The demo will:
 - Open an interactive web dashboard (http://localhost:8501)
 - Let you test fraud detection with sample transactions
 ### Option 2: Train Your Own Models (30 minutes)
+
 ```bash
 # 1. Install dependencies
 cd SOURCE
@@ -90,6 +98,7 @@ python scripts/train_deep_lane.py
 python scripts/run_optimization.py
 ```
 ### Option 3: Deploy to AWS (30 minutes)
+
 ```bash
 # 1. Install AWS CLI & SAM CLI
 pip install aws-sam-cli
@@ -110,6 +119,7 @@ curl https://your-api-url.amazonaws.com/prod/predict \
 ```
 ## Architecture
 ### Dual-Track Design
+
 ```
 Transaction Input 
 (V1-V28, Time, Amount, device, IP, email) 
@@ -132,6 +142,7 @@ SHAP Explainer
 Reason Codes 
 ```
 ### Key Components
+
 1. **Fast Lane (Real-time)**
 - **Dataset**: Credit Card Fraud (284K transactions)
 - **Model**: Logistic Regression
@@ -156,24 +167,29 @@ Reason Codes
 - Human-readable reason codes
 - <50ms per transaction
 ## Datasets Used
+
 | Dataset | Transactions | Fraud Rate | Features | Purpose |
 |---------|-------------|------------|----------|---------|
 | **Credit Card Fraud** | 284,807 | 0.172% | 31 | Fast Lane training |
 | **IEEE-CIS Fraud** | 590,540 | 3.5% | 435 | Deep Lane + Entity risk |
 ## Use Cases
 ### 1. Online Banking Transfers
+
 - **Scenario**: Customer initiates wire transfer of $5,000
 - **System**: Scores in 80ms -> Risk 65% -> Challenge with OTP
 - **Outcome**: Legitimate user verified, fraudster blocked
 ### 2. Card-Not-Present Transactions
+
 - **Scenario**: E-commerce purchase from new device
 - **System**: Checks device reputation + transaction pattern
 - **Outcome**: High-risk device -> Block + Alert
 ### 3. Account Takeover Detection
+
 - **Scenario**: Login from unusual location + IP proxy
 - **System**: Combines behavioral signals + entity risk
 - **Outcome**: Risk 88% -> Block + Manual review
 ## ROI & Business Value
+
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
 | **Fraud Losses** | $7M/month | $2.6M/month | **-62.5%** |
@@ -186,34 +202,41 @@ Reason Codes
 See `DOCS/ROI_ANALYSIS.md` for detailed calculations.
 ## System Requirements
 ### For Demo
+
 - **Python**: 3.8 or higher
 - **RAM**: 2 GB
 - **Storage**: 500 MB
 - **Internet**: Required for first-time package installation
 ### For Training
+
 - **Python**: 3.8 or higher
 - **RAM**: 8 GB (16 GB recommended)
 - **Storage**: 5 GB (for datasets + models)
 - **GPU**: Optional (speeds up Autoencoder training)
 ### For AWS Deployment
+
 - **AWS Account**: Free tier eligible
 - **Budget**: $0.11/month (prototype), $11/month (production)
 - **Services**: Lambda, API Gateway, S3, DynamoDB
 ## Performance Benchmarks
 ### Model Performance
+
 - **Fast Lane AUC**: 0.9650 (validation), 0.9234 (test)
 - **Deep Lane AUC**: 0.8940 (mean CV), 0.8887 (OOF)
 - **Recall@1%FPR**: 0.7959 (catches 79.59% fraud at 1% false positive rate)
 ### API Performance (AWS Lambda)
+
 - **Cold Start**: <3s (first invocation)
 - **Warm Latency**: 50-150ms (P95: <150ms)
 - **Throughput**: 1000+ TPS (auto-scaling)
 - **Availability**: 99.95% (AWS SLA)
 ### Cost Efficiency
+
 - **Prototype** (300K requests/month): **$0.11/month**
 - **Production** (3M requests/month): **$11/month**
 - **80x cheaper** than EC2 ($11 vs $50-100/month)
 ## Technology Stack
+
 | Component | Technology | Version |
 |-----------|-----------|---------|
 | **Language** | Python | 3.8+ |
@@ -225,6 +248,7 @@ See `DOCS/ROI_ANALYSIS.md` for detailed calculations.
 | **IaC** | AWS SAM (CloudFormation) | - |
 | **Data** | Pandas, NumPy | 2.0+, 1.24+ |
 ## Documentation
+
 | Document | Description | Location |
 |----------|-------------|----------|
 | **Quick Start** | 5-minute setup guide | `DOCS/QUICK_START.md` |
@@ -236,16 +260,19 @@ See `DOCS/ROI_ANALYSIS.md` for detailed calculations.
 | **Troubleshooting** | Common issues & fixes | `DOCS/TROUBLESHOOTING.md` |
 ## Testing
 ### Run Demo Tests
+
 ```bash
 cd DEMO
 python -m pytest tests/
 ```
 ### Run API Tests
+
 ```bash
 cd SOURCE
 python -m pytest tests/integration/
 ```
 ### Manual Testing with Sample Transactions
+
 **Low Risk (Pass)**
 ```json
 {
@@ -275,13 +302,16 @@ Expected: Risk ~50%, Decision: Challenge
 ```
 Expected: Risk ~85%, Decision: Block
 ## Security & Compliance
-**Data Privacy**: PII tokenization & hashing
-**Encryption**: TLS 1.2+ (in-transit), SSE-S3 (at-rest)
-**IAM**: Least privilege access control
-**Audit**: CloudWatch logs (7-day retention)
-**Compliance**: GDPR-ready, explainable decisions
+
+- **Data Privacy**: PII tokenization & hashing
+- **Encryption**: TLS 1.2+ (in-transit), SSE-S3 (at-rest)
+- **IAM**: Least privilege access control
+- **Audit**: CloudWatch logs (7-day retention)
+- **Compliance**: GDPR-ready, explainable decisions
+
 See `DOCS/SECURITY.md` for details.
 ## Contributing
+
 This is a demonstration project for VPBank. For production use:
 1. Review and customize threshold settings
 2. Integrate with actual banking systems
@@ -290,44 +320,57 @@ This is a demonstration project for VPBank. For production use:
 5. Enable API authentication
 ## Support
 ### Technical Issues
+
 - Check `DOCS/TROUBLESHOOTING.md`
 - Review demo logs in `DEMO/logs/`
 - Test API health: `curl https://your-api-url/health`
 ### Business Questions
+
 - ROI analysis: `DOCS/ROI_ANALYSIS.md`
 - Demo script: `DEMO_SCRIPT.md`
 - Presentation: `PRESENTATION_SLIDES.md`
 ### Deployment Help
+
 - AWS guide: `SOURCE/aws/AWS_DEPLOYMENT_GUIDE.md`
 - Quick start: `SOURCE/aws/AWS_QUICK_START.md`
 - Architecture: `AWS_ARCHITECTURE.md`
 ## Success Metrics
+
 ### Achieved (Validated)
-Fast Lane AUC **0.9650** (target: 0.95-0.97)
-Deep Lane AUC **0.8940** (target: ≥0.88)
-API Latency **50-150ms** (target: <150ms)
-Entity Risk **5,526 entities** generated
-Deployment **$0.11/month** (target: <$100/month)
-Threshold Optimization **$7,550 savings** (7.9%)
-Demo **fully functional** and debugged
+
+- Fast Lane AUC **0.9650** (target: 0.95-0.97)
+- Deep Lane AUC **0.8940** (target: ≥0.88)
+- API Latency **50-150ms** (target: <150ms)
+- Entity Risk **5,526 entities** generated
+- Deployment **$0.11/month** (target: <$100/month)
+- Threshold Optimization **$7,550 savings** (7.9%)
+- Demo **fully functional** and debugged
+
 ### Expected (Production)
-Fraud catch rate **+12-18%**
-False positive reduction **-18-22%**
-Customer friction **-50%**
-Annual savings **$61.2M**
+
+- Fraud catch rate **+12-18%**
+- False positive reduction **-18-22%**
+- Customer friction **-50%**
+- Annual savings **$61.2M**
 ## Version History
+
 - **v1.0** (2025-11-10): Initial release
-- Dual-track architecture
-- AWS serverless deployment
-- Interactive demo
-- Complete documentation
+  - Dual-track architecture
+  - AWS serverless deployment
+  - Interactive demo
+  - Complete documentation
 ## License
+
 Proprietary - VPBank StreamGuard
 © 2025 VPBank. All rights reserved.
+
 ---
+
 ## Next Steps
+
 1. **Try the Demo** (`DEMO/run_demo.bat` or `DEMO/run_demo.sh`)
 2. **Read Quick Start** (`DOCS/QUICK_START.md`)
 3. **Review Architecture** (`DOCS/ARCHITECTURE.md`)
 4. **Deploy to AWS** (`SOURCE/aws/AWS_DEPLOYMENT_GUIDE.md`)
+
 **Ready to detect fraud in real-time!** 

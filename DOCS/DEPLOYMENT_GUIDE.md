@@ -5,6 +5,7 @@
 ---
 ## Prerequisites
 ### 1. AWS Account Setup
+
 - [ ] AWS account created with $100 credit
 - [ ] AWS CLI installed
 - [ ] AWS credentials configured
@@ -22,6 +23,7 @@ aws configure
 aws sts get-caller-identity
 ```
 ### 2. Install AWS SAM CLI
+
 ```bash
 # Install SAM CLI (Serverless Application Model)
 pip install aws-sam-cli
@@ -29,6 +31,7 @@ pip install aws-sam-cli
 sam --version
 ```
 ### 3. Python Dependencies
+
 ```bash
 # Install required packages
 pip install boto3 pandas
@@ -36,6 +39,7 @@ pip install boto3 pandas
 ---
 ## Deployment Steps
 ### Step 1: Prepare Models (5 min)
+
 **Check Fast Lane model exists:**
 ```bash
 # Find latest Fast Lane model
@@ -54,6 +58,7 @@ ls -lh $MODEL_DIR/scaler.pkl
 ```
 ---
 ### Step 2: Deploy Infrastructure with SAM (10 min)
+
 **Navigate to AWS directory:**
 ```bash
 cd aws/
@@ -148,6 +153,7 @@ echo "Table: $TABLE_NAME"
 ```
 ---
 ### Step 3: Upload Models to S3 (2 min)
+
 **Run upload script:**
 ```bash
 cd ../ # Back to project root
@@ -177,6 +183,7 @@ Upload Complete!
 ```
 ---
 ### Step 4: Load Entity Risk to DynamoDB (3 min)
+
 **Find entity risk CSV:**
 ```bash
 # Find latest Deep Lane model directory
@@ -230,6 +237,7 @@ Entity risk data loaded successfully!
 ```
 ---
 ### Step 5: Test API (5 min)
+
 **Create test script:**
 ```bash
 # Create test file
@@ -365,6 +373,7 @@ API testing complete!
 ---
 ## Deployment Verification
 ### Check All Resources
+
 **1. DynamoDB Table:**
 ```bash
 aws dynamodb describe-table --table-name $TABLE_NAME --query 'Table.[TableName,ItemCount,TableSizeBytes]'
@@ -390,6 +399,7 @@ aws apigateway get-rest-apis --query 'items[?name==`vpbank-fraud-api`].[name,id]
 ---
 ## Cost Monitoring
 ### Set up Billing Alarm
+
 ```bash
 # Create SNS topic for billing alerts
 aws sns create-topic --name billing-alerts
@@ -412,6 +422,7 @@ aws cloudwatch put-metric-alarm \
 --alarm-actions arn:aws:sns:us-east-1:123456789012:billing-alerts
 ```
 ### Check Current Costs
+
 ```bash
 # View cost explorer (requires Cost Explorer enabled in AWS Console)
 aws ce get-cost-and-usage \
@@ -423,6 +434,7 @@ aws ce get-cost-and-usage \
 ---
 ## Troubleshooting
 ### Lambda Function Logs
+
 ```bash
 # View recent logs
 aws logs tail /aws/lambda/vpbank-fraud-scoring --follow
@@ -432,11 +444,13 @@ aws logs get-log-events \
 --log-stream-name 2025/11/09/[$LATEST]xxxxx
 ```
 ### API Gateway Logs
+
 ```bash
 # Enable logging (if not already enabled)
 aws logs describe-log-groups --log-group-name-prefix /aws/apigateway/
 ```
 ### Common Issues
+
 **1. Lambda function can't load model:**
 - Check S3 bucket permissions
 - Verify model files uploaded correctly
@@ -449,6 +463,7 @@ aws logs describe-log-groups --log-group-name-prefix /aws/apigateway/
 - Verify CORS settings if calling from browser
 ---
 ## Next Steps
+
 1. **Monitor costs** - Check AWS Billing Dashboard daily for first week
 2. **Add API Key authentication** - Update SAM template to require API keys
 3. **Enable CloudWatch alarms** - Alert on Lambda errors, high latency
@@ -456,6 +471,7 @@ aws logs describe-log-groups --log-group-name-prefix /aws/apigateway/
 5. **Optimize** - Tune Lambda memory, add caching if needed
 ---
 ## Cleanup (Delete Stack)
+
 **To delete all resources and stop incurring costs:**
 ```bash
 # Delete CloudFormation stack
@@ -471,6 +487,7 @@ aws cloudformation describe-stacks --stack-name vpbank-fraud-detection
 ```
 ---
 ## Deployment Summary
+
 | Resource | Status | Details |
 |------------------|--------|--------------------------------------|
 | DynamoDB Table | | 5,526 items, PAY_PER_REQUEST |

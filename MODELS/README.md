@@ -1,7 +1,9 @@
 # VPBank StreamGuard - Pre-trained Models
 ## Overview
+
 This folder contains pre-trained machine learning models and entity risk data for the VPBank StreamGuard fraud detection system.
 ## Model Structure
+
 ```
 MODELS/
 fast_lane/ # Fast Lane (Real-time)
@@ -12,18 +14,19 @@ entity_risk_combined.csv # 5,526 entity risks (452 KB)
 ```
 ## Fast Lane Models
 ### logistic_model.pkl
-**Purpose**: Real-time transaction scoring
-**Type**: Scikit-learn Logistic Regression
-**Input**: 34 features (V1-V28 + Time + Amount + derived features)
-**Output**: Fraud probability (0-1)
-**Performance**:
+
+- **Purpose**: Real-time transaction scoring
+- **Type**: Scikit-learn Logistic Regression
+- **Input**: 34 features (V1-V28 + Time + Amount + derived features)
+- **Output**: Fraud probability (0-1)
+- **Performance**:
 - **Training AUC**: 0.9926
 - **Validation AUC**: 0.9650
 - **Test AUC**: 0.9234
 - **Recall@1%FPR**: 0.7959
 **Inference Latency**: ~20ms
-**File Size**: ~1 KB
-**Usage**:
+- **File Size**: ~1 KB
+- **Usage**:
 ```python
 import pickle
 import numpy as np
@@ -43,16 +46,18 @@ print(f"Fraud probability: {fraud_prob:.4f}")
 ```
 ---
 ### preprocessor.pkl
-**Purpose**: Feature scaling/normalization
-**Type**: Scikit-learn StandardScaler
-**Input**: 34 raw features
-**Output**: 34 scaled features (mean=0, std=1)
-**Note**: Always apply this scaler before passing data to the model!
+
+- **Purpose**: Feature scaling/normalization
+- **Type**: Scikit-learn StandardScaler
+- **Input**: 34 raw features
+- **Output**: 34 scaled features (mean=0, std=1)
+- **Note**: Always apply this scaler before passing data to the model!
 ---
 ## Deep Lane Data
 ### entity_risk_combined.csv
-**Purpose**: Pre-computed entity reputation scores
-**Format**: CSV with columns:
+
+- **Purpose**: Pre-computed entity reputation scores
+- **Format**: CSV with columns:
 - `entity_type`: Type of entity (id_23, DeviceInfo, id_30, id_31, id_33, P_emaildomain, card1)
 - `entity_id`: Unique identifier for the entity
 - `fraud_rate`: Historical fraud rate for this entity (0-1)
@@ -68,8 +73,8 @@ print(f"Fraud probability: {fraud_prob:.4f}")
 - **P_emaildomain**: Email domain (60 entities)
 - **card1**: Card identifier (4,597 entities)
 **Total Entities**: 5,526
-**High-Risk Entities**: 43 (0.78% with fraud_rate > 0.5)
-**Usage**:
+- **High-Risk Entities**: 43 (0.78% with fraud_rate > 0.5)
+- **Usage**:
 ```python
 import pandas as pd
 # Load entity risk
@@ -94,11 +99,12 @@ print(f"Device risk: {device_risk:.4f}")
 ```
 ## Model Training Details
 ### Fast Lane
-**Dataset**: Credit Card Fraud (284,807 transactions, 0.172% fraud)
-**Training Date**: 2025-11-05
-**Training Time**: ~3 minutes
-**Algorithm**: Logistic Regression with L2 regularization
-**Hyperparameters**:
+
+- **Dataset**: Credit Card Fraud (284,807 transactions, 0.172% fraud)
+- **Training Date**: 2025-11-05
+- **Training Time**: ~3 minutes
+- **Algorithm**: Logistic Regression with L2 regularization
+- **Hyperparameters**:
 - `C=1.0` (inverse regularization strength)
 - `max_iter=1000`
 - `class_weight='balanced'` (handle class imbalance)
@@ -112,10 +118,11 @@ print(f"Device risk: {device_risk:.4f}")
 - Other derived features
 **Cross-validation**: Stratified 5-fold
 ### Deep Lane
-**Dataset**: IEEE-CIS Fraud (590,540 transactions, 3.5% fraud)
-**Training Date**: 2025-11-09
-**Training Time**: ~45 minutes
-**Algorithms**:
+
+- **Dataset**: IEEE-CIS Fraud (590,540 transactions, 3.5% fraud)
+- **Training Date**: 2025-11-09
+- **Training Time**: ~45 minutes
+- **Algorithms**:
 1. **XGBoost** (supervised)
 - Mean CV AUC: 0.8940
 - 159 features (V95-V137, V279-V321, identity, transaction features)
@@ -135,6 +142,7 @@ entity_risk = df.groupby(['entity_type', 'entity_id']).agg({
 entity_risk['risk_score'] = normalize(entity_risk['fraud_rate'])
 ```
 ## File Sizes & Storage
+
 | File | Size | Storage | Download Time (1 Mbps) |
 |------|------|---------|------------------------|
 | logistic_model.pkl | 1 KB | S3 | <1 second |
@@ -142,13 +150,15 @@ entity_risk['risk_score'] = normalize(entity_risk['fraud_rate'])
 | entity_risk_combined.csv | 452 KB | S3 / DynamoDB | <1 second |
 | **Total** | **455 KB** | - | **<2 seconds** |
 ## Model Versioning
+
 Current version: **v1.0** (2025-11-10)
-**Version Naming**: `{model_type}_{dataset}_{YYYYMMDD_HHMMSS}`
+- **Version Naming**: `{model_type}_{dataset}_{YYYYMMDD_HHMMSS}`
 Examples:
 - `fast_lane_baseline_20251105_210615`
 - `deep_lane_20251109_020030`
 ## Retraining Models
 ### Fast Lane
+
 ```bash
 cd ../SOURCE/scripts
 python train_fast_lane.py
@@ -157,6 +167,7 @@ python train_fast_lane.py
 # - models/fast_lane_baseline_{timestamp}/preprocessor.pkl
 ```
 ### Deep Lane
+
 ```bash
 cd ../SOURCE/scripts
 python train_deep_lane.py
@@ -167,6 +178,7 @@ python train_deep_lane.py
 ```
 ## Model Deployment
 ### Local (Demo)
+
 Models are loaded directly from this folder:
 ```python
 # In demo/streamlit_app.py
@@ -174,6 +186,7 @@ MODEL_DIR = '../MODELS/fast_lane'
 model = pickle.load(open(f'{MODEL_DIR}/logistic_model.pkl', 'rb'))
 ```
 ### AWS Lambda
+
 Models are uploaded to S3 and loaded at runtime:
 ```bash
 # Upload to S3
@@ -186,6 +199,7 @@ python upload_models_to_s3.py \
 # - Subsequent: Load from /tmp (~50ms)
 ```
 ### DynamoDB (Entity Risk)
+
 ```bash
 # Load entity risk to DynamoDB
 cd ../SOURCE/aws/scripts
@@ -196,6 +210,7 @@ python load_entity_risk_to_dynamodb.py \
 ```
 ## Model Performance
 ### Fast Lane
+
 | Metric | Train | Validation | Test |
 |--------|-------|------------|------|
 | AUC | 0.9926 | **0.9650** | 0.9234 |
@@ -203,10 +218,12 @@ python load_entity_risk_to_dynamodb.py \
 | Recall@1%FPR | 0.82 | **0.7959** | 0.74 |
 | F1 Score | 0.89 | 0.85 | 0.80 |
 ### Deep Lane
+
 | Metric | Fold 1 | Fold 2 | Fold 3 | Fold 4 | Fold 5 | **Mean** |
 |--------|--------|--------|--------|--------|--------|----------|
 | AUC | 0.8867 | 0.8866 | 0.8892 | 0.9079 | 0.8996 | **0.8940** |
 ### Combined System (Expected)
+
 | Metric | Baseline | With StreamGuard | Improvement |
 |--------|----------|------------------|-------------|
 | Fraud catch rate | 75% | 87-90% | **+12-15%** |
@@ -214,16 +231,19 @@ python load_entity_risk_to_dynamodb.py \
 | Customer friction | 100K/month | 50K/month | **-50%** |
 ## Model Limitations
 ### Fast Lane
+
 - **Domain**: Credit card transactions only
 - **Features**: Requires V1-V28 PCA transformation
 - **Class imbalance**: Trained on 0.172% fraud rate
 - **Drift**: Retrain every 3-6 months
 ### Deep Lane
+
 - **Coverage**: Only 5,526 entities (unseen entities -> risk_score = 0)
 - **Update frequency**: Batch process every 15-30 minutes
 - **Cold start**: New devices/IPs have no history
 ## Security & Privacy
-**Model files contain**:
+
+- **Model files contain**:
 - Statistical parameters (weights, biases)
 - NO raw transaction data
 - NO PII (names, emails, phone numbers)
@@ -233,6 +253,7 @@ python load_entity_risk_to_dynamodb.py \
 - NO PII
 ## Troubleshooting
 ### "Model failed to load"
+
 ```python
 # Check model integrity
 import pickle
@@ -243,6 +264,7 @@ except Exception as e:
 print(f"Error: {e}")
 ```
 ### "Feature dimension mismatch"
+
 ```python
 # Check input shape
 print(f"Model expects: {model.coef_.shape[1]} features")
@@ -250,6 +272,7 @@ print(f"You provided: {X.shape[1]} features")
 # Should be 34 features for Fast Lane
 ```
 ### "Entity not found"
+
 ```python
 # Handle missing entities
 entity_risk = entity_risk_df[
@@ -262,11 +285,13 @@ else:
 entity_risk = entity_risk[0]
 ```
 ## Next Steps
+
 1. **Use the models**: See `../DEMO/streamlit_app.py` for integration example
 2. **Deploy to AWS**: Follow `../DOCS/DEPLOYMENT_GUIDE.md`
 3. **Retrain models**: Use scripts in `../SOURCE/scripts/`
 4. **Monitor performance**: Track AUC, precision, recall in production
 ## Support
+
 For model-related questions:
 - Review training code: `../SOURCE/scripts/train_*.py`
 - Check model metrics: Training logs and validation results

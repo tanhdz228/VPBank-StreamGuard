@@ -4,6 +4,7 @@
 **Architecture:** Serverless (DynamoDB + Lambda + API Gateway)
 ---
 ## Architecture Overview
+
 ```
 Client Application 
 (Web/Mobile/Backend Service) 
@@ -53,18 +54,21 @@ Cost: FREE (within 5GB tier)
 ---
 ## Cost Breakdown
 ### Free Tier Limits (12 months)
+
 - **Lambda:** 1M requests/month + 400,000 GB-seconds compute
 - **API Gateway:** 1M requests/month
 - **DynamoDB:** 25 GB storage + 25 RCU + 25 WCU
 - **S3:** 5 GB storage + 20,000 GET + 2,000 PUT
 - **CloudWatch:** 5 GB logs
 ### Estimated Usage (Prototype Testing)
+
 - **Requests:** 10,000/day = 300,000/month
 - **Lambda executions:** 300K/month @ 512MB, 500ms avg
 - **DynamoDB reads:** 300K/month (1 read per request)
 - **S3 storage:** 500 MB models
 - **CloudWatch logs:** 1 GB/month
 ### Monthly Cost Estimate
+
 | Service | Usage | Free Tier | Billable | Cost/Month |
 |--------------|-------------------|-----------|----------|------------|
 | Lambda | 300K req, 150K GB-s | 1M req | $0 | **$0.00** |
@@ -76,6 +80,7 @@ Cost: FREE (within 5GB tier)
 | **TOTAL** | | | | **~$0.11** |
 **With $100 credit:** 909 months runtime (75+ years!) 
 ### Production Scale (100,000 req/day = 3M/month)
+
 | Service | Billable | Cost/Month |
 |--------------|----------------|------------|
 | Lambda | 2M req | $0.40 |
@@ -88,6 +93,7 @@ Cost: FREE (within 5GB tier)
 ---
 ## Deployment Architecture
 ### 1. Infrastructure as Code (AWS SAM)
+
 **File:** `template.yaml` (AWS SAM template)
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
@@ -201,6 +207,7 @@ Value: !Ref EntityRiskTable
 ---
 ## Lambda Function Implementation
 ### Directory Structure
+
 ```
 lambda/
 handler.py # Main Lambda handler
@@ -212,6 +219,7 @@ entity_risk.py # DynamoDB entity risk lookup
 scoring.py # Fraud scoring logic
 ```
 ### handler.py (Main Lambda Function)
+
 ```python
 import json
 import boto3
@@ -353,6 +361,7 @@ return {
 }
 ```
 ### requirements.txt
+
 ```
 boto3==1.34.0
 numpy==1.24.3
@@ -360,6 +369,7 @@ scikit-learn==1.3.0
 ```
 ---
 ## DynamoDB Table Design
+
 **Table Name:** `vpbank-entity-risk`
 **Schema:**
 - **Partition Key:** `entity_key` (String) - Format: `{entity_type}#{entity_id}`
@@ -388,6 +398,7 @@ scikit-learn==1.3.0
 ```
 ---
 ## Security & Best Practices
+
 1. **API Key Authentication**
 - Generate API key in API Gateway
 - Require `X-Api-Key` header for all requests
@@ -409,6 +420,7 @@ scikit-learn==1.3.0
 - DynamoDB throttling
 ---
 ## Performance Targets
+
 | Metric | Target | AWS Service Impact |
 |----------------|-----------|------------------------------|
 | Cold start | <3s | Lambda (first invocation) |

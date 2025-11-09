@@ -1,16 +1,21 @@
 # VPBank StreamGuard - API Reference
 ## Overview
+
 The VPBank StreamGuard fraud detection API provides real-time transaction scoring with explainable AI. This document covers all API endpoints, request/response formats, and integration examples.
 ## Base URL
-**Production**: `https://{api-id}.execute-api.{region}.amazonaws.com/prod`
-**Demo**: `http://localhost:8501` (Streamlit demo)
+
+- **Production**: `https://{api-id}.execute-api.{region}.amazonaws.com/prod`
+- **Demo**: `http://localhost:8501` (Streamlit demo)
 ## Authentication
-**Current**: None (prototype)
-**Production**: API Key in header `X-API-Key: your-api-key`
+
+- **Current**: None (prototype)
+- **Production**: API Key in header `X-API-Key: your-api-key`
 ## Endpoints
 ### 1. POST /predict
+
 Score a transaction for fraud risk.
 #### Request
+
 ```http
 POST /predict HTTP/1.1
 Host: {api-id}.execute-api.{region}.amazonaws.com
@@ -29,6 +34,7 @@ Content-Type: application/json
 }
 ```
 #### Request Fields
+
 | Field | Type | Required | Description | Example |
 |-------|------|----------|-------------|---------|
 | `V1` - `V28` | float | Yes | PCA components from transaction features | -1.3598 |
@@ -37,8 +43,9 @@ Content-Type: application/json
 | `ip_proxy` | string | No | IP proxy indicator (0 or 1) | "1" |
 | `device_id` | string | No | Device identifier | "device_123" |
 | `email_domain` | string | No | Email domain | "gmail.com" |
-**Note**: V1-V28 are PCA components. In production, your system would perform PCA transformation before calling the API. For demo/testing, you can use random values between -5 and 5.
+- **Note**: V1-V28 are PCA components. In production, your system would perform PCA transformation before calling the API. For demo/testing, you can use random values between -5 and 5.
 #### Response (Success)
+
 ```json
 {
 "risk_score": 0.4521,
@@ -62,6 +69,7 @@ Content-Type: application/json
 }
 ```
 #### Response Fields
+
 | Field | Type | Description | Range |
 |-------|------|-------------|-------|
 | `risk_score` | float | Final combined risk score | 0.0 - 1.0 |
@@ -73,6 +81,7 @@ Content-Type: application/json
 | `timestamp` | string | Scoring timestamp (ISO 8601) | - |
 | `latency_ms` | int | Processing time in milliseconds | - |
 #### Response (Error)
+
 ```json
 {
 "error": "Invalid request format",
@@ -81,12 +90,14 @@ Content-Type: application/json
 }
 ```
 #### RBA Decision Logic
+
 | Risk Score | Decision | Action | User Impact |
 |------------|----------|--------|-------------|
 | < 0.3 | **pass** | Allow transaction immediately | None (seamless) |
 | 0.3 - 0.7 | **challenge** | Step-up authentication (OTP/biometric) | 10-15 sec delay |
 | > 0.7 | **block** | Block + manual review | Transaction declined |
 #### Example Requests
+
 **Low Risk Transaction**
 ```bash
 curl -X POST https://your-api.amazonaws.com/prod/predict \
@@ -139,13 +150,16 @@ Response:
 }
 ```
 ### 2. GET /health
+
 Check API health status.
 #### Request
+
 ```http
 GET /health HTTP/1.1
 Host: {api-id}.execute-api.{region}.amazonaws.com
 ```
 #### Response
+
 ```json
 {
 "status": "healthy",
@@ -156,19 +170,23 @@ Host: {api-id}.execute-api.{region}.amazonaws.com
 }
 ```
 ## Reason Codes
+
 The API returns human-readable reason codes explaining why a transaction is risky.
 ### Amount-Related
+
 | Code | Description | Threshold |
 |------|-------------|-----------|
 | `amount_high` | Amount significantly above user average | >2 std dev |
 | `amount_very_high` | Amount extremely high | >3 std dev |
 | `amount_unusual` | Amount pattern is unusual | Statistical anomaly |
 ### Time-Related
+
 | Code | Description | Threshold |
 |------|-------------|-----------|
 | `time_unusual` | Transaction at unusual hour | 11 PM - 6 AM |
 | `time_pattern_anomaly` | Time pattern breaks user habit | Statistical anomaly |
 ### Entity-Related (Device, IP, Email)
+
 | Code | Description | Threshold |
 |------|-------------|-----------|
 | `device_new` | Device never seen before | First transaction |
@@ -177,18 +195,21 @@ The API returns human-readable reason codes explaining why a transaction is risk
 | `ip_fraud` | IP linked to fraud | Fraud rate >10% |
 | `email_fraud` | Email domain linked to fraud | Fraud rate >5% |
 ### Behavioral
+
 | Code | Description | Threshold |
 |------|-------------|-----------|
 | `pattern_anomaly` | Transaction pattern is anomalous | Autoencoder error >95th percentile |
 | `velocity_high` | Too many transactions in short time | >10 tx in 1 hour |
 | `sequence_anomaly` | Transaction sequence is unusual | Statistical anomaly |
 ### Entity Risk
+
 | Code | Description | Threshold |
 |------|-------------|-----------|
 | `entity_risk_high` | One or more entities have high risk | Entity risk >0.5 |
 | `entity_risk_very_high` | One or more entities have very high risk | Entity risk >0.7 |
 ## Integration Examples
 ### Python
+
 ```python
 import requests
 import json
@@ -231,6 +252,7 @@ else: # block
 block_transaction_and_alert()
 ```
 ### JavaScript (Node.js)
+
 ```javascript
 const axios = require('axios');
 const API_URL = 'https://your-api.amazonaws.com/prod/predict';
@@ -261,6 +283,7 @@ console.log(`Reasons: ${result.reason_codes.slice(0, 3).join(', ')}`);
 });
 ```
 ### Java
+
 ```java
 import java.net.http.*;
 import java.net.URI;
@@ -297,6 +320,7 @@ System.out.println("Decision: " + result.get("decision").getAsString());
 }
 ```
 ## Performance & SLA
+
 | Metric | Target | Typical | P95 | P99 |
 |--------|--------|---------|-----|-----|
 | **Latency** | <150ms | 80ms | 120ms | 150ms |
@@ -304,9 +328,11 @@ System.out.println("Decision: " + result.get("decision").getAsString());
 | **Availability** | 99.9% | 99.95% | - | - |
 | **Error Rate** | <0.1% | <0.05% | - | - |
 ## Rate Limits
-**Current**: 1000 requests/second (burst: 2000)
-**Production**: Configurable via API Gateway
+
+- **Current**: 1000 requests/second (burst: 2000)
+- **Production**: Configurable via API Gateway
 ## Error Codes
+
 | Status | Code | Message | Action |
 |--------|------|---------|--------|
 | 200 | - | Success | - |
@@ -317,6 +343,7 @@ System.out.println("Decision: " + result.get("decision").getAsString());
 | 503 | SERVICE_UNAVAILABLE | Service temporarily down | Retry after 60s |
 ## Best Practices
 ### 1. Error Handling
+
 ```python
 import time
 def score_with_retry(transaction, max_retries=3):
@@ -335,6 +362,7 @@ else:
 raise
 ```
 ### 2. Batch Processing
+
 For high volume, batch transactions (100-1000 per request):
 ```python
 # Future enhancement - not yet implemented
@@ -346,6 +374,7 @@ json={"transactions": transactions}
 return response.json()
 ```
 ### 3. Fallback Strategy
+
 ```python
 def score_with_fallback(transaction):
 try:
@@ -356,6 +385,7 @@ logger.error(f"API failed: {e}")
 return rule_based_scoring(transaction)
 ```
 ### 4. Monitoring
+
 ```python
 import time
 def score_with_monitoring(transaction):
@@ -374,12 +404,14 @@ raise
 ```
 ## Changelog
 ### v1.0 (2025-11-10)
+
 - Initial release
 - POST /predict endpoint
 - GET /health endpoint
 - SHAP-based reason codes
 - RBA policy (pass/challenge/block)
 ## Support
+
 For API issues:
 - Check health endpoint: `GET /health`
 - Review CloudWatch logs

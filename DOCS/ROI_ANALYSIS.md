@@ -4,6 +4,7 @@
 **Comparison:** StreamGuard vs Baseline (Rule-based System)
 ---
 ## Executive Summary
+
 **Net Annual Savings:** $237,740
 **ROI:** 2,377% (on $10,000 implementation cost)
 **Payback Period:** 15 days
@@ -16,6 +17,7 @@
 ---
 ## 1. Business Metrics Framework
 ### 1.1 Baseline Assumptions (VPBank Monthly Volume)
+
 | Metric | Value | Source |
 |--------|-------|--------|
 | Total Transactions/Month | 1,000,000 | Assumed medium-sized bank |
@@ -24,6 +26,7 @@
 | Average Transaction Amount | $166.67 | IEEE-CIS mean |
 | Average Fraud Loss | $500 | Industry average (higher value) |
 ### 1.2 Cost Assumptions
+
 | Cost Type | Value | Justification |
 |-----------|-------|---------------|
 | **Fraud Loss per Transaction** | $500 | Average loss when fraud succeeds |
@@ -33,12 +36,14 @@
 | **Infrastructure Cost (Serverless)** | $11/month | AWS Lambda + DynamoDB + S3 (3M req) |
 ---
 ## 2. Baseline System Performance (Rule-Based)
+
 **Assumptions (Industry Standard):**
 - Fraud Catch Rate: 60%
 - False Positive Rate: 10%
 - Challenged Transactions: 15% of all transactions
 - Precision: 14% (frauds among challenged)
 ### 2.1 Monthly Breakdown
+
 | Metric | Calculation | Value |
 |--------|-------------|-------|
 | **Frauds Detected** | 35,000 × 60% | **21,000** |
@@ -48,6 +53,7 @@
 | **False Positives (Challenged)** | 150,000 - 21,000 | **129,000** |
 | **False Positive Rate** | 129,000 / 965,000 | **13.4%** |
 ### 2.2 Monthly Cost Breakdown
+
 | Cost Component | Calculation | Monthly | Annual |
 |----------------|-------------|---------|--------|
 | **Fraud Losses** | 14,000 × $500 | $7,000,000 | $84,000,000 |
@@ -61,6 +67,7 @@
 - High investigation burden (150K manual reviews/month)
 ---
 ## 3. StreamGuard Performance (Validated Results)
+
 **From Optimization Results (run_optimization.py):**
 - Optimal Thresholds: pass=0.1, block=0.9
 - Fraud Catch Rate: 18.86% (of all transactions, including non-frauds)
@@ -71,6 +78,7 @@ Let's recalculate assuming StreamGuard targets:
 - Fraud Detection Recall: 85% (conservative estimate from 0.7959 Recall@1%FPR)
 - False Positive Rate: 2% (vs 13.4% baseline, -85% improvement)
 ### 3.1 Monthly Breakdown
+
 | Metric | Calculation | Value |
 |--------|-------------|-------|
 | **Frauds Detected** | 35,000 × 85% | **29,750** |
@@ -87,6 +95,7 @@ Let's recalculate assuming StreamGuard targets:
 - Challenge rate: -67% (15% -> 4.9%)
 - Precision: +334% (14% -> 60.7%)
 ### 3.2 Monthly Cost Breakdown
+
 | Cost Component | Calculation | Monthly | Annual |
 |----------------|-------------|---------|--------|
 | **Fraud Losses** | 5,250 × $500 | $2,625,000 | $31,500,000 |
@@ -95,6 +104,7 @@ Let's recalculate assuming StreamGuard targets:
 | **Infrastructure** | AWS Serverless (3M req) | $11 | $132 |
 | **TOTAL COST** | | **$3,256,261** | **$39,075,132** |
 ### 3.3 Savings vs Baseline
+
 | Metric | Baseline | StreamGuard | Savings | Improvement |
 |--------|----------|-------------|---------|-------------|
 | **Fraud Losses** | $7,000,000 | $2,625,000 | **$4,375,000** | **-62.5%** |
@@ -106,11 +116,14 @@ Let's recalculate assuming StreamGuard targets:
 **Annual Savings:** $84,885,768
 ---
 ## 4. Conservative Estimate (Adjusted)
+
 The above assumes perfect fraud detection in production. Let's use a more conservative estimate:
 ### 4.1 Conservative Assumptions
+
 - Fraud Detection Recall: 75% (vs 85% optimistic)
 - False Positive Rate: 3% (vs 2% optimistic)
 ### 4.2 Conservative Monthly Breakdown
+
 | Metric | Calculation | Value |
 |--------|-------------|-------|
 | **Frauds Detected** | 35,000 × 75% | **26,250** |
@@ -118,6 +131,7 @@ The above assumes perfect fraud detection in production. Let's use a more conser
 | **False Positives** | 965,000 × 3% | **28,950** |
 | **Total Challenged** | 26,250 + 28,950 | **55,200** |
 ### 4.3 Conservative Monthly Cost
+
 | Cost Component | Calculation | Monthly | Annual |
 |----------------|-------------|---------|--------|
 | **Fraud Losses** | 8,750 × $500 | $4,375,000 | $52,500,000 |
@@ -126,6 +140,7 @@ The above assumes perfect fraud detection in production. Let's use a more conser
 | **Infrastructure** | AWS Serverless | $11 | $132 |
 | **TOTAL COST** | | **$5,230,011** | **$62,760,132** |
 ### 4.4 Conservative Savings
+
 | Metric | Baseline | StreamGuard | Savings | Improvement |
 |--------|----------|-------------|---------|-------------|
 | **Monthly** | $10,330,075 | $5,230,011 | **$5,100,064** | **-49.4%** |
@@ -134,6 +149,7 @@ The above assumes perfect fraud detection in production. Let's use a more conser
 ---
 ## 5. Implementation Costs
 ### 5.1 One-Time Costs
+
 | Item | Cost | Notes |
 |------|------|-------|
 | **Data Integration** | $5,000 | Connect to VPBank systems |
@@ -143,6 +159,7 @@ The above assumes perfect fraud detection in production. Let's use a more conser
 | **Training & Documentation** | $1,000 | Staff training |
 | **TOTAL** | **$10,000** | One-time |
 ### 5.2 Ongoing Costs (Annual)
+
 | Item | Cost/Year | Notes |
 |------|-----------|-------|
 | **AWS Infrastructure** | $132 | $11/month × 12 (3M req/month) |
@@ -151,6 +168,7 @@ The above assumes perfect fraud detection in production. Let's use a more conser
 | **Staff Time (Part-time)** | $10,000 | 10% of 1 FTE ($100K salary) |
 | **TOTAL** | **$11,832** | Annual recurring |
 ### 5.3 ROI Calculation (Conservative)
+
 | Metric | Value |
 |--------|-------|
 | **Annual Savings** | $61,200,768 |
@@ -163,6 +181,7 @@ The above assumes perfect fraud detection in production. Let's use a more conser
 ---
 ## 6. Customer Experience Impact
 ### 6.1 Challenge Rate Comparison
+
 | Metric | Baseline | StreamGuard | Improvement |
 |--------|----------|-------------|-------------|
 | **Challenged Transactions** | 150,000/month | 55,200/month | **-63%** |
@@ -171,6 +190,7 @@ The above assumes perfect fraud detection in production. Let's use a more conser
 | **Valid Txn Challenge Rate** | 13.4% | 3.0% | **-78%** |
 **Key Benefit:** 100,050 fewer legitimate customers frustrated per month
 ### 6.2 Customer Satisfaction Metrics
+
 Assuming:
 - Each false challenge reduces NPS by 10 points temporarily
 - Each false decline reduces NPS by 30 points and risks churn
@@ -182,6 +202,7 @@ Assuming:
 | **Lifetime Value Saved** | - | - | **$2M+** (at $2K LTV) |
 ---
 ## 7. Threshold Optimization Impact
+
 **From optimization_results/threshold_optimization_20251109_184142.json:**
 | Metric | Baseline (0.3, 0.7) | Optimal (0.1, 0.9) | Savings |
 |--------|---------------------|---------------------|---------|
@@ -192,6 +213,7 @@ Assuming:
 ---
 ## 8. Scalability & Growth Projections
 ### 8.1 Cost Scaling (AWS Serverless)
+
 | Volume | Requests/Month | Cost/Month | Cost per 1K Req |
 |--------|----------------|------------|-----------------|
 | Prototype | 300K | $0.11 | $0.00037 |
@@ -202,6 +224,7 @@ Assuming:
 | Enterprise | 100M | $350.00 | $0.00350 |
 **Linear scaling:** $3.50 per million requests (very predictable)
 ### 8.2 Comparison: EC2 vs Serverless
+
 | Infrastructure | Fixed Cost | Variable Cost | Total (10M req) |
 |----------------|------------|---------------|-----------------|
 | **EC2 + RDS + Redis** | $75/month | $25/month | **$100/month** |
@@ -211,6 +234,7 @@ Assuming:
 ---
 ## 9. Risk Analysis
 ### 9.1 Risks & Mitigations
+
 | Risk | Probability | Impact | Mitigation |
 |------|-------------|--------|------------|
 | **Model drift** | Medium | High | PSI/KS monitoring (automated), quarterly retraining |
@@ -219,6 +243,7 @@ Assuming:
 | **False positive spike** | Low | Medium | Dynamic threshold adjustment, A/B testing framework |
 | **Integration delays** | Medium | Low | Shadow mode testing, gradual rollout (10%->50%->100%) |
 ### 9.2 Sensitivity Analysis
+
 **What if fraud catch rate is only 70% (vs 75% conservative)?**
 - Frauds missed: 10,500 (vs 8,750)
 - Additional fraud losses: $875,000/month
@@ -233,6 +258,7 @@ Assuming:
 ---
 ## 10. Summary & Recommendations
 ### 10.1 Key Takeaways
+
 **Financial:**
 - **Annual Savings:** $61.2M (conservative) to $84.9M (optimistic)
 - **ROI:** 611,789% (conservative)
@@ -249,6 +275,7 @@ Assuming:
 - **Compliance:** Ready for GDPR, audit requirements
 - **Innovation:** Dual-track architecture (Fast + Deep lanes)
 ### 10.2 Recommended Next Steps
+
 **Immediate (Week 1-2):**
 1. Present demo to leadership
 2. Get approval for production pilot
@@ -269,6 +296,7 @@ Assuming:
 3. Real-time model updates (online learning)
 4. Expand to other fraud types (account takeover, money laundering)
 ### 10.3 Success Criteria (First 6 Months)
+
 | Metric | Target | Stretch Goal |
 |--------|--------|--------------|
 | Fraud Catch Rate | ≥75% | ≥85% |
@@ -279,6 +307,7 @@ Assuming:
 | System Uptime | ≥99.5% | ≥99.9% |
 ---
 ## 11. Comparison to Industry Benchmarks
+
 | Metric | Industry Average | StreamGuard | Gap |
 |--------|------------------|-------------|-----|
 | Fraud Detection Rate | 60-70% | **75-85%** | **+15-25%** |
@@ -289,6 +318,7 @@ Assuming:
 **Conclusion:** StreamGuard significantly outperforms industry benchmarks across all key metrics.
 ---
 ## Appendix A: Calculation Assumptions
+
 **Fraud Base Rate:** 3.5% (IEEE-CIS dataset, conservative for banking)
 **Transaction Volume:** 1M/month (medium-sized bank, ~33K/day)
 **Average Transaction:** $166.67 (IEEE-CIS mean)
@@ -306,6 +336,7 @@ Assuming:
 - API Gateway: $3.50 per 1M requests (after free tier)
 ---
 ## Appendix B: Validation Sources
+
 1. **Model Performance:** MEMORY.md (Day 1-12 training results)
 2. **Threshold Optimization:** optimization_results/threshold_optimization_20251109_184142.json
 3. **Infrastructure Cost:** AWS pricing calculator (2025 rates)
